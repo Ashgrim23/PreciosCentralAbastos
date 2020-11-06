@@ -3,3 +3,4 @@ dist
 credenciales.py
 .env
 *.pyc 
+.next
