@@ -14,7 +14,7 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended:true}))
 
 router.get('/api/precios',async(req,res)=>{
-    conn.query('select * from PCA.PRECIOS',(err,rows,fields)=>{
+    conn.query('select * from PCA.PRECIOS ORDER BY FECHA DESC',(err,rows,fields)=>{
         if(!err){
             res.send(rows)
         } else {

@@ -6,3 +6,13 @@
 html {
     font-family: "Georgia";
 }
+
+.zoom{
+    animation: zoom .2s;
+    -webkit-animation-fill-mode: forwards;
+
+}
+
+@keyframes zoom {
+    100% {transform: scale(1.5);}
+}
