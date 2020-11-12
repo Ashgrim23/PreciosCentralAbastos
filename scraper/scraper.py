@@ -34,7 +34,7 @@ def extraeRows(fecha):
 
 def loadHistorico():
     #Carga Inicial
-    fecha=date(2017,10,5)
+    fecha=date(2020,11,5)
     fechaFinal=datetime.today().date()    
     while fecha<=fechaFinal:
         extraeRows(fecha)        
@@ -42,7 +42,7 @@ def loadHistorico():
 
 
 if __name__=='__main__':   
-    #loadHistorico()
-    extraeRows(datetime.today().date())
+    loadHistorico()
+    #extraeRows(datetime.today().date())
     
     

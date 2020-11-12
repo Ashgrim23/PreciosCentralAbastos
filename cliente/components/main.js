@@ -1,17 +1,13 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+import ItemCard from './ItemCard'
 
-export default function Main(props) {
-    console.log(props)
+export default function Main(props) {    
     return (
-        <div>
-            {props.data.preciosHoy.map(item=>(
-                <div className="flex justify-start space-x-5">
-                    <p>{item.CATEGORIA}</p>
-                    <p>{item.DESCRIPCION}</p>
-                    <p>{item.PRECIO}</p>
-                    <p>{item.FECHA.substring(0,10)}</p>
-                </div>
-            ))}
+        <div className="flex flex-wrap  p-2 border-black">            
+            {props.items.map((item,idx)=>(                
+                <ItemCard key={idx} data={item} />
+                
+            ))}            
         </div>
     )
 }
