@@ -3,7 +3,7 @@ const dotenv =require('dotenv')
 
 dotenv.config()
 
-const conn=mysql.createConnection({
+const conn=mysql.createPool({
     host:process.env.PCA_HOST,
     user:process.env.PCA_USER,
     password:process.env.PCA_PASSWORD,

@@ -4,8 +4,10 @@
 
 
 html {
-    font-family: "Georgia";
+    font-family: "Georgia";        
 }
+
+
 
 .zoom{
     animation: zoom .2s;

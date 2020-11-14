@@ -25,10 +25,11 @@ router.get('/api/precios',async(req,res)=>{
 
 router.get('/api/precios/:fecha',async(req,res)=>{
     const fecha = req.params.fecha
-    conn.query(`select * from PRECIOS where fecha=?
-                UNION
-                select * from PRECIOS where fecha=(select MAX(FECHA) 
-                from PRECIOS where fecha<?)`,[fecha,fecha],(err,rows,fields)=>{
+    conn.query(`select s.FECHA,s.CATEGORIA,s.DESCRIPCION,s.PRECIO,s.UNIDAD, s2.precio PRECIOANT,s2.fecha FECHAANT 
+                from PCA.PRECIOS s
+                LEFT OUTER JOIN PCA.PRECIOS s2 on (s.CATEGORIA=s2.CATEGORIA and s.DESCRIPCION=s2.DESCRIPCION)
+                where s.fecha=(select max(FECHA) from PRECIOS t where t.FECHA<=?)
+                and s2.fecha=(select max(FECHA) from PRECIOS t where t.FECHA<s.FECHA)`,[fecha],(err,rows,fields)=>{
         if(!err){
             res.json({
                 exito:true,
