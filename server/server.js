@@ -4,7 +4,7 @@ const bodyParser=require('body-parser')
 const router=express.Router();
 const conn=require('./db')
 const dotenv =require('dotenv');
-
+const moment=require('moment')
 
 dotenv.config()
 
@@ -13,14 +13,34 @@ app.use(cors())
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended:true}))
 
-router.get('/api/precios',async(req,res)=>{
-    conn.query('select * from PCA.PRECIOS ORDER BY FECHA DESC',(err,rows,fields)=>{
-        if(!err){
-            res.send(rows)
-        } else {
-            console.log(err)
-        }
-    })
+router.post('/api/precios',async(req,res)=>{
+    const {filtro,fecha,producto} =req.body
+    
+    var fchIni
+    switch(filtro) {
+        case '6D':
+            fchIni=moment(fecha).subtract(6,'days')
+            break;
+        case '1M':
+            fchIni=moment(fecha).subtract(1,'months')
+            break;
+        case '6M':
+            fchIni=moment(fecha).subtract(6,'months')
+            break;
+        case 'TODO':
+            fchIni=moment('2013-12-31')
+            break;
+    }
+    
+     conn.query(`select JSON_ARRAYAGG(JSON_OBJECT("x",date_format(FECHA,'%m/%d/%Y'),"y",PRECIO )) SERIE  from PCA.PRECIOS  
+                  where DESCRIPCION=? and FECHA>=? and FECHA<=?               
+                  ORDER BY FECHA DESC`,[producto,moment(fchIni).format("YYYY-MM-DD"),moment(fecha).format("YYYY-MM-DD")],(err,rows,fields)=>{
+          if(!err){
+              res.send(rows)
+          } else {
+              console.log(err)
+          }
+      })
 })
 
 router.get('/api/precios/:fecha',async(req,res)=>{

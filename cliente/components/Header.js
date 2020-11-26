@@ -13,9 +13,9 @@ export default function Header(props) {
     }
 
     return (        
-        <div className="mt-4 mb-1 md:mt-7 md:ml-10 mx-2 flex justify-center md:justify-start items-center">                        
+        <div className="mt-1  mb-1 md:mt-4 md:ml-10 mx-2 flex justify-center md:justify-start items-center">                        
             <Fade top cascade>
-            <ul className="flex w-full justify-evenly md:justify-start md:space-x-3 ">                
+            <ul className="list-none flex w-full justify-evenly md:justify-start md:space-x-3 ">                
                 <li id ="Abarrotes" className="text-center cursor-pointer" onMouseLeave={handleOut} onMouseEnter={handleHover} onClick={props.toggleItems}  >
                    <div key={hover}>                         
                         <i className={"fas faa-pulse fa-shopping-basket text-2xl "+(hover=='Abarrotes' && "text-yellow-600 zoom")} />                                                    

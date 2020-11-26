@@ -1,50 +1,55 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import Header from '../components/Header'
-import axios from 'axios'
 import Loading from '../components/Loading'
 import Main from '../components/main';
 import DatePicker from 'react-datepicker'
 import "react-datepicker/dist/react-datepicker.css";
+import axios from 'axios'
 import moment from 'moment'
+import {connect} from 'react-redux'
+import {setState } from '../redux/appActions'
 
 
-export default function Index() {
-    moment.locale('es');
+
+function Index(props) {
+    moment.locale('es');    
     const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
-    const dias=['do','lu','ma','mi','ju','vi','sá']
-
-    const [loading, setloading] = useState(false)
-    const [precios, setPrecios] = useState([])
-    const [filtro, setFiltro] = useState("Abarrotes")
-    const [itemsFiltrados, setitemsFiltrados] = useState([])
-    const [fecha, setFecha] = useState(new Date());
+    const dias=['do','lu','ma','mi','ju','vi','sá']    
     
-  
-    useEffect(async()=>{
-        setloading(true)            
-        console.log(fecha)
-        const result=await axios.get(`http://localhost:3000/api/precios/${moment(fecha).format("YYYY-MM-DD")}`)                      
-        setPrecios(result.data.rows);        
-        setitemsFiltrados(result.data.rows.filter(item=>item.CATEGORIA===filtro))        
-        setloading(false)        
-    },[fecha])
+    
+    useEffect(async()=>{        
+        if (!props.isLoading)  props.setState({isLoading:true})
+        const result=await axios.get(`http://localhost:3000/api/precios/${moment(props.fecha).format("YYYY-MM-DD")}`)   
+        const datos={
+            precios:result.data.rows,
+            itemsFiltrados:result.data.rows.filter(item=>item.CATEGORIA===props.filtro), 
+            isLoading:false,
+            producto:null           
+        }        
+        props.setState(datos)            
 
-    const toggleItems=(e)=>{      
-        console.log('asdas')
-        if (precios.length<=0) return         
-        setFiltro(e.currentTarget.id)        
-        setitemsFiltrados(precios.filter(item=>item.CATEGORIA===e.currentTarget.id))        
+    },[props.fecha])
+
+
+    const toggleItems=(e)=>{           
+        if (props.precios.length<=0) return  
+        let data={
+            producto:null,
+            filtro:e.currentTarget.id,
+            itemsFiltrados:props.precios.filter(item=>item.CATEGORIA===e.currentTarget.id)}
+        props.setState(data) 
+        
     }
 
     const onDeltaClick=(e)=>{     
-        if (loading) return
+        if (props.isLoading) return
         var newDate;
          if (e.currentTarget.id==='deltaPrev') {
-            newDate=moment(fecha).subtract(1,'days').toDate()
+            newDate=moment(props.fecha).subtract(1,'days').toDate()
          } else if (e.currentTarget.id==='deltaFwd') {
-            newDate=moment(fecha).add(1,'days').toDate()
+            newDate=moment(props.fecha).add(1,'days').toDate()
          }
-         setFecha(newDate)
+         props.setState({fecha:newDate})         
     }
 
     
@@ -55,20 +60,21 @@ export default function Index() {
         </span>
     );
 
-        return (        
-            <div className="container antialiased flex flex-col-reverse md:flex-col h-screen ">            
+        return (                    
+            <div className=" antialiased justify-between md:justify-start  flex  flex-col-reverse md:flex-col h-screen ">                           
+                
                 <nav id="headerContainer" className="flex flex-col-reverse md:flex-col border-solid border-black rounded border md:border-none" >
                     <Header toggleItems={toggleItems}  />
                     <div className="flex flex-col  items-center justify-center border-b-2 p-1">                            
-                            <span className="text-xl">{filtro}</span>
-                            <div  className="flex">
+                            <span className="text-xl hidden md:block ">{props.filtro}</span>
+                            <div  className="flex mt-2 md:mt-4">
                                 <div  id="deltaPrev" onClick={onDeltaClick}><i  className="text-3xl cursor-pointer fa fa-caret-square-left mx-2" /></div>
                                 <DatePicker              
                                     dateFormat="dd 'de' MMMM 'del' yyyy"    
                                     todayButton="Hoy"
                                     withPortal                
-                                    selected={fecha} 
-                                    onChange={date => setFecha(date)} 
+                                    selected={props.fecha} 
+                                    onChange={date => props.setState({fecha:date,isLoading:true})} 
                                     customInput={<Input />}
                                     locale={{
                                         localize:{
@@ -84,23 +90,35 @@ export default function Index() {
                             </div>
                         </div>  
                 </nav>
-                
-                <div className="px-8 sm:mb-0" style={{overflow:"auto"}}>
-                    {!loading ? 
-                        <div>   
-                            <Main items={itemsFiltrados} />                                           
-                            {(itemsFiltrados.length>0 && moment(itemsFiltrados[0].FECHA).format('DD/MM/YYYY')!=moment(fecha).format('DD/MM/YYYY') ) &&
-                                <div>                                
-                                    <p className="text-sm">Precios no disponibles en la fecha seleccionada, mostrando precios mas recientes al: <span className="font-semibold">{moment(itemsFiltrados[0].FECHA).format("DD [de] MMMM [del] yyyy")}</span></p>                            
-                                </div>
-                            }    
-                            <p className="text-sm"> Información diaria proporcionada por <b><a href="https://www.ficeda.com.mx/" target="_blank" >ficeda.com.mx</a></b></p>                        
-                                
-                        </div>                    
+                    {!props.isLoading ? 
+                            <React.Fragment>
+                            <div style={{overflow:"auto"}}>   
+                                <Main />       
+                                <ul className="list-disc mx-5 md:mx-10">
+                                {(props.itemsFiltrados.length>0 && moment(props.itemsFiltrados[0].FECHA).format('DD/MM/YYYY')!=moment(props.fecha).format('DD/MM/YYYY') ) &&                                                       
+                                    <li className="text-xs md:text-sm">Precios no disponibles en la fecha seleccionada, mostrando precios mas recientes al: <span className="font-semibold">{moment(props.itemsFiltrados[0].FECHA).format("DD [de] MMMM [del] yyyy")}</span></li>                                                            
+                                }    
+                                    <li className="text-xs md:text-sm"> Información diaria proporcionada por <b><a href="https://www.ficeda.com.mx/" target="_blank" >ficeda.com.mx</a></b></li>                                                   
+                                </ul>
+                            </div>   
+                            <span className=" border-black border-b text-center text-xl block md:hidden ">{props.filtro}</span>    
+                        </React.Fragment>             
                         :<Loading/>
                     }
-                    
-                </div>
             </div>
     )
 }
+
+const mapStateToProps=state=>({
+    precios:state.precios,
+    itemsFiltrados:state.itemsFiltrados,
+    fecha:state.fecha,
+    isLoading:state.isLoading,
+    filtro:state.filtro
+})
+
+const mapActionsToProps={
+    setState:setState
+}
+
+export default connect(mapStateToProps,mapActionsToProps)(Index)
