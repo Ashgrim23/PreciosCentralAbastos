@@ -60,7 +60,10 @@ function Index(props) {
         </span>
     );
 
-        return (                    
+        return (            
+            <React.Fragment>
+                <p className="antialiased text-2xl text-center">Precios Central de Abastos</p>
+            
             <div className=" antialiased justify-between md:justify-start  flex  flex-col-reverse md:flex-col h-screen ">                           
                 
                 <nav id="headerContainer" className="flex flex-col-reverse md:flex-col border-solid border-black rounded border md:border-none" >
@@ -91,7 +94,7 @@ function Index(props) {
                         </div>  
                 </nav>
                     {!props.isLoading ? 
-                            <React.Fragment>
+                        <React.Fragment>
                             <div style={{overflow:"auto"}}>   
                                 <Main />       
                                 <ul className="list-disc mx-5 md:mx-10">
@@ -102,10 +105,14 @@ function Index(props) {
                                 </ul>
                             </div>   
                             <span className=" border-black border-b text-center text-xl block md:hidden ">{props.filtro}</span>    
-                        </React.Fragment>             
+                        </React.Fragment>   
                         :<Loading/>
+                         
+                        
+                        
                     }
             </div>
+            </React.Fragment>        
     )
 }
 

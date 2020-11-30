@@ -1,16 +1,13 @@
 import {connect} from 'react-redux'
 import {setState } from '../redux/appActions'
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import ProductChart from './ProductChart'
 import ProductsList from './ProductsList'
-import { Fade } from 'react-reveal'
+
 
 function Main(props) {
-    const [producto, setproducto] = useState(null)
- 
-
-    const onCardclick = (e) => {                
-        props.setState({producto:e.currentTarget.id})
+    const onCardclick = (item) => {                             
+        props.setState({producto:item})
     }
     
 

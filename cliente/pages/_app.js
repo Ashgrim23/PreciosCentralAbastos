@@ -12,7 +12,14 @@ import store from '../redux/store'
 function MyApp({ Component, pageProps }) {  
  
   return (
+    
     <Provider store={store}>
+      <head>
+      <title>Precios Central de Abastos</title>
+      <meta name="description" content="Historico de precios de la central de abastos de la ciudad de mexico." />
+      <meta name="keywords" content="central de abastos,precios, historico, ciudad de mexico, distrito federal,canasta basica"/>
+
+    </head>
       <Component  {...pageProps} />    
     </Provider>
   )

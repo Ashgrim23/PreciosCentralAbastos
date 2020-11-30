@@ -13,7 +13,9 @@ export default function Header(props) {
     }
 
     return (        
+        <React.Fragment>        
         <div className="mt-1  mb-1 md:mt-4 md:ml-10 mx-2 flex justify-center md:justify-start items-center">                        
+        
             <Fade top cascade>
             <ul className="list-none flex w-full justify-evenly md:justify-start md:space-x-3 ">                
                 <li id ="Abarrotes" className="text-center cursor-pointer" onMouseLeave={handleOut} onMouseEnter={handleHover} onClick={props.toggleItems}  >
@@ -43,5 +45,6 @@ export default function Header(props) {
             </ul>    
             </Fade>        
         </div>
+        </React.Fragment>
     )
 }

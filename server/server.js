@@ -14,27 +14,13 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended:true}))
 
 router.post('/api/precios',async(req,res)=>{
-    const {filtro,fecha,producto} =req.body
     
-    var fchIni
-    switch(filtro) {
-        case '6D':
-            fchIni=moment(fecha).subtract(6,'days')
-            break;
-        case '1M':
-            fchIni=moment(fecha).subtract(1,'months')
-            break;
-        case '6M':
-            fchIni=moment(fecha).subtract(6,'months')
-            break;
-        case 'TODO':
-            fchIni=moment('2013-12-31')
-            break;
-    }
+    const {producto, fecha} =req.body    
     
-     conn.query(`select JSON_ARRAYAGG(JSON_OBJECT("x",date_format(FECHA,'%m/%d/%Y'),"y",PRECIO )) SERIE  from PCA.PRECIOS  
-                  where DESCRIPCION=? and FECHA>=? and FECHA<=?               
-                  ORDER BY FECHA DESC`,[producto,moment(fchIni).format("YYYY-MM-DD"),moment(fecha).format("YYYY-MM-DD")],(err,rows,fields)=>{
+     conn.query(`select JSON_ARRAYAGG(
+                    JSON_OBJECT("x",date_format(FECHA,'%m/%d/%Y'),"y",PRECIO )) SERIE  from PCA.PRECIOS  
+                  where DESCRIPCION=? and FECHA<=?`,[producto,fecha],(err,rows,fields)=>{
+        
           if(!err){
               res.send(rows)
           } else {
