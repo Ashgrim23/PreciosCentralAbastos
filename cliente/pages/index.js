@@ -32,8 +32,7 @@ function Index(props) {
     },[props.fecha])
 
 
-    const toggleItems=(e)=>{       
-        console.log('das')    
+    const toggleItems=(e)=>{               
         if (props.precios.length<=0) return  
         let data={
             producto:null,
@@ -64,10 +63,8 @@ function Index(props) {
 
         return (            
             <React.Fragment>
-                <p className="antialiased text-2xl text-center">Precios Central de Abastos</p>
-            
             <div className=" antialiased justify-between md:justify-start  flex  flex-col-reverse md:flex-col h-screen ">                           
-                
+                <p className="antialiased text-2xl text-center hidden md:block">Precios Central de Abastos</p>
                 <nav id="headerContainer" className="flex flex-col-reverse md:flex-col border-solid border-black rounded border md:border-none" >
                     <Header toggleItems={toggleItems}  />
                     <div className="flex flex-col  items-center justify-center border-b-2 p-1">                            
@@ -107,6 +104,7 @@ function Index(props) {
                                 </ul>
                             </div>   
                             <span className=" border-black border-b text-center text-xl block md:hidden ">{props.filtro}</span>    
+                            <p className="antialiased text-2xl text-center block md:hidden ">Precios Central de Abastos</p>
                         </React.Fragment>   
                         :<Loading/>
                          
