@@ -19,7 +19,8 @@ function Index(props) {
     
     useEffect(async()=>{        
         if (!props.isLoading)  props.setState({isLoading:true})
-        const result=await axios.get(`http://localhost:3000/api/precios/${moment(props.fecha).format("YYYY-MM-DD")}`)   
+        const HOST = process.env.HOST ? process.env.HOST :"http://localhost:3000"
+        const result=await axios.get(`${HOST}/api/precios/${moment(props.fecha).format("YYYY-MM-DD")}`)   
         const datos={
             precios:result.data.rows,
             itemsFiltrados:result.data.rows.filter(item=>item.CATEGORIA===props.filtro), 
@@ -31,7 +32,8 @@ function Index(props) {
     },[props.fecha])
 
 
-    const toggleItems=(e)=>{           
+    const toggleItems=(e)=>{       
+        console.log('das')    
         if (props.precios.length<=0) return  
         let data={
             producto:null,
@@ -45,9 +47,9 @@ function Index(props) {
         if (props.isLoading) return
         var newDate;
          if (e.currentTarget.id==='deltaPrev') {
-            newDate=moment(props.fecha).subtract(1,'days').toDate()
+            newDate=moment.utc(props.fecha).subtract(1,'days').toDate()
          } else if (e.currentTarget.id==='deltaFwd') {
-            newDate=moment(props.fecha).add(1,'days').toDate()
+            newDate=moment.utc(props.fecha).add(1,'days').toDate()
          }
          props.setState({fecha:newDate})         
     }
@@ -70,7 +72,7 @@ function Index(props) {
                     <Header toggleItems={toggleItems}  />
                     <div className="flex flex-col  items-center justify-center border-b-2 p-1">                            
                             <span className="text-xl hidden md:block ">{props.filtro}</span>
-                            <div  className="flex mt-2 md:mt-4">
+                            <div  className="flex my-2 md:mt-4">
                                 <div  id="deltaPrev" onClick={onDeltaClick}><i  className="text-3xl cursor-pointer fa fa-caret-square-left mx-2" /></div>
                                 <DatePicker              
                                     dateFormat="dd 'de' MMMM 'del' yyyy"    
@@ -98,8 +100,8 @@ function Index(props) {
                             <div style={{overflow:"auto"}}>   
                                 <Main />       
                                 <ul className="list-disc mx-5 md:mx-10">
-                                {(props.itemsFiltrados.length>0 && moment(props.itemsFiltrados[0].FECHA).format('DD/MM/YYYY')!=moment(props.fecha).format('DD/MM/YYYY') ) &&                                                       
-                                    <li className="text-xs md:text-sm">Precios no disponibles en la fecha seleccionada, mostrando precios mas recientes al: <span className="font-semibold">{moment(props.itemsFiltrados[0].FECHA).format("DD [de] MMMM [del] yyyy")}</span></li>                                                            
+                                {(props.itemsFiltrados.length>0 && moment.utc(props.itemsFiltrados[0].FECHA).format('DD/MM/YYYY')!=moment(props.fecha).format('DD/MM/YYYY') ) &&                                                       
+                                    <li className="text-xs md:text-sm">Precios no disponibles en la fecha seleccionada, mostrando precios mas recientes al: <span className="font-semibold">{moment.utc(props.itemsFiltrados[0].FECHA).format("DD [de] MMMM [del] yyyy")}</span></li>                                                            
                                 }    
                                     <li className="text-xs md:text-sm"> Información diaria proporcionada por <b><a href="https://www.ficeda.com.mx/" target="_blank" >ficeda.com.mx</a></b></li>                                                   
                                 </ul>

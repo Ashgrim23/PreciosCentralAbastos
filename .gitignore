@@ -4,3 +4,4 @@ credenciales.py
 .env
 *.pyc 
 .next
+.env.local

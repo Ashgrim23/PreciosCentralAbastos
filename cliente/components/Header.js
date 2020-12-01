@@ -4,7 +4,7 @@ import Fade from 'react-reveal/Fade'
 export default function Header(props) {
     const [hover, sethover] = useState("")
 
-    function handleHover(e) {        
+    function handleHover(e) {              
         sethover(e.currentTarget.id)             
     }
     
@@ -18,25 +18,25 @@ export default function Header(props) {
         
             <Fade top cascade>
             <ul className="list-none flex w-full justify-evenly md:justify-start md:space-x-3 ">                
-                <li id ="Abarrotes" className="text-center cursor-pointer" onMouseLeave={handleOut} onMouseEnter={handleHover} onClick={props.toggleItems}  >
-                   <div key={hover}>                         
-                        <i className={"fas faa-pulse fa-shopping-basket text-2xl "+(hover=='Abarrotes' && "text-yellow-600 zoom")} />                                                    
+                <li id ="Abarrotes" className="text-center cursor-pointer" onMouseLeave={handleOut} onMouseEnter={handleHover} onTouchStart={props.toggleItems} onClick={props.toggleItems} >
+                   <div key={hover}      >                         
+                        <i  className={"fas fa-shopping-basket text-2xl "+(hover=='Abarrotes' && "text-yellow-600 zoom")} />                                                    
                     </div>
                     <p className="text-sm font-semibold ">Abarrotes</p>                   
                 </li>
-                <li id="Cárnicos"  className="text-center cursor-pointer" onMouseLeave={handleOut} onMouseEnter={handleHover} onClick={props.toggleItems}>
+                <li id="Cárnicos"  className="text-center cursor-pointer" onMouseLeave={handleOut} onMouseEnter={handleHover} onTouchStart={props.toggleItems} onClick={props.toggleItems}>
                     <div key={hover}>
                         <i  className={"fas fa-drumstick-bite text-2xl "+(hover=="Cárnicos" && "text-red-900 zoom") }/>
                     </div>                    
                     <p className="text-sm font-semibold">Cárnicos</p>
                 </li>
-                <li id="Frutas" className="text-center cursor-pointer" onMouseLeave={handleOut} onMouseEnter={handleHover} onClick={props.toggleItems}>
+                <li id="Frutas" className="text-center cursor-pointer" onMouseLeave={handleOut} onMouseEnter={handleHover} onTouchStart={props.toggleItems} onClick={props.toggleItems}>
                     <div key={hover}>
                         <i className={"fas fa-apple-alt text-2xl "+(hover=="Frutas" && "text-red-600 zoom")}/>                  
                     </div>
                     <p className= "text-xs sm:text-sm font-semibold">Frutas</p>
                 </li>
-                <li id="Verduras y Legumbres" className="text-center cursor-pointer " title="Verduras y Legumbres" onMouseLeave={handleOut} onMouseEnter={handleHover} onClick={props.toggleItems}>
+                <li id="Verduras y Legumbres" className="text-center cursor-pointer " title="Verduras y Legumbres" onMouseLeave={handleOut} onMouseEnter={handleHover} onTouchStart={props.toggleItems} onClick={props.toggleItems}>
                     <div key={hover}>
                         <i className={"fas fa-carrot  text-2xl "+(hover=="Verduras y Legumbres" && "text-orange-600 zoom")}/>
                     </div>

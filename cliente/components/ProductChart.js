@@ -54,8 +54,7 @@ export default function ProductModal(props) {
         }        
         const result=await Axios.post('http://localhost:3000/api/precios',data)        
         let serieData=JSON.parse(result.data[0].SERIE)        
-        const serieDataFiltrada=filtraProductos('10D',serieData)  
-        console.log(serieDataFiltrada)   
+        const serieDataFiltrada=filtraProductos('10D',serieData)          
         setEstado({loading:false,filtro:'10D',serie:{name:"Precios",data:serieDataFiltrada},datos:serieData })
     }, [])
         
@@ -129,7 +128,7 @@ export default function ProductModal(props) {
                            <div> <p className="text-center text-2xl font-semibold">{DESCRIPCION}</p></div>
                             <div><p className="text-gray-800 font-bold text-2xl text-center">${PRECIO} <span className=" text-sm font-light text-gray-600">Pesos /{UNIDAD} </span></p></div>
                         </div>
-                        <p className="text-center text-sm md:text-base  font-light mb-1">Historico de precios al {moment(FECHA).format("DD [de] MMMM [del] yyyy")}</p>
+                        <p className="text-center text-sm md:text-base  font-light mb-1">Historico de precios al {moment.utc(FECHA).format("DD [de] MMMM [del] yyyy")}</p>
                         <ul className="flex justify-center space-x-1">
                             <li id='10D' onClick={handleClick} className={(estado.filtro=='10D'?"bg-blue-900 ":"bg-blue-500 ") + " cursor-pointer  hover:bg-blue-700 text-white font-bold py-1  px-2 md:py-2 md:px-4 rounded text-xs md:text-base "}>10D</li>
                             <li id='1M' onClick={handleClick} className={(estado.filtro=='1M'?"bg-blue-900 ":"bg-blue-500 ") + " cursor-pointer bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 md:py-2 md:px-4 rounded text-xs md:text-base"}>1M</li>
