@@ -6,7 +6,7 @@ import ProductsList from './ProductsList'
 
 
 function Main(props) {
-    const onCardclick = (item) => {                             
+    const onCardclick = (item) => {         
         props.setState({producto:item})
     }
     

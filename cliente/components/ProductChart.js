@@ -13,7 +13,7 @@ const Grafica = dynamic(
 )
 
 export default function ProductModal(props) {
-    const {  DESCRIPCION,FECHA,PRECIO,UNIDAD } = props.producto
+    const {  ID_PRODUCTO,DESCRIPCION,FECHA,PRECIO,UNIDAD } = props.producto
     const [estado, setEstado] = useState({loading:true})
 
     const filtraProductos=(filtro,serieData)=>{
@@ -49,9 +49,10 @@ export default function ProductModal(props) {
 
     useEffect(async () => {
         let data={            
-            producto:DESCRIPCION,
+            id_producto:ID_PRODUCTO,
             fecha:FECHA       
-        }        
+        }       
+        
         const result=await Axios.post('http://localhost:3000/api/precios',data)        
         let serieData=JSON.parse(result.data[0].SERIE)        
         const serieDataFiltrada=filtraProductos('10D',serieData)          

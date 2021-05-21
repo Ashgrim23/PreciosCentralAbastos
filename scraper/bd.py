@@ -4,15 +4,50 @@ from datetime import date
 
 
 insertDataRow= ("INSERT INTO PCA.PRECIOS"
-                "(FECHA,CATEGORIA,DESCRIPCION,PRECIO,UNIDAD)"
-                "VALUES (%s,%s,%s,%s,%s)")
+                "(FECHA,ID_PRODUCTO,PRECIO)"
+                "VALUES (%s,%s,%s)")
 
+insertQueryCatego=("INSERT INTO PCA.CAT_CATEGORIAS (DESCRIPCION)"
+                   "VALUES (%s) " )
+
+insertQueryProduct=("INSERT INTO PCA.CAT_PRODUCTOS (DESCRIPCION,UNIDAD,ID_CATEGORIA) VALUES (%s,%s,%s) " )
+
+queryCategorias="SELECT DESCRIPCION,ID_CATEGORIA FROM PCA.CAT_CATEGORIAS"
+
+queryProductos="select CONCAT(descripcion,unidad) IAVE,ID_PRODUCTO FROM PCA.CAT_PRODUCTOS"
+
+cnx=mysql.connector.connect(**credenciales.config)
+
+def insertaProducto(row):
+    cursor=cnx.cursor()
+    cursor.execute(insertQueryProduct,row)
+    cnx.commit()
+    cursor.close()
+    
+
+def insertaCatego(catego):
+    cursor = cnx.cursor()    
+    cursor.execute(insertQueryCatego, (catego,) )
+    cnx.commit()
+    cursor.close()
+
+def getCategorias():
+    cursor=cnx.cursor()
+    cursor.execute(queryCategorias)
+    rows =cursor.fetchall()
+    cursor.close()
+    return dict(rows)
+
+def getProductos():
+    cursor=cnx.cursor()
+    cursor.execute(queryProductos)
+    rows = cursor.fetchall()
+    cursor.close()
+    return dict(rows)
 
 def insertaPrecios(row):    
-    print('insertando: '+str(row[0][0]))    
-    cnx=mysql.connector.connect(**credenciales.config)
     cursor = cnx.cursor()    
     cursor.executemany(insertDataRow, row)
     cnx.commit()
     cursor.close()
-    cnx.close()
+    

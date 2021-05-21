@@ -4,7 +4,11 @@ import requests
 from datetime import date, datetime, timedelta
 
 
+
 def extraeRows(fecha):
+    global catCategos
+    global catProds
+    print('insertando: '+str(fecha))   
     url='https://www.ficeda.com.mx/app_precios/buscador-precios/created:{fecha}/type_id:2'.format(fecha=fecha)
     r=requests.get(url,allow_redirects=False)
     soup=soupp(r.text,"html.parser")
@@ -17,6 +21,7 @@ def extraeRows(fecha):
     fecha=encabezado.split(" ")[3]        
     categorias=soup.findAll('h2',{"class":"category_title"})      
     tablas=soup.findAll('table')
+    
     newRowsArr=[]
     for x in range(len(categorias)):
         catego=categorias[x].text.strip()
@@ -26,15 +31,27 @@ def extraeRows(fecha):
             descripcion=cols[0].text.strip()
             precio=cols[3].text.strip()[1:]
             unidad=cols[4].text.strip()
-            newRow=(fecha,catego,descripcion,precio,unidad)
+            if catego not in catCategos:
+                bd.insertaCatego(catego)
+                print("Nueva categoria: "+catego)
+                catCategos=bd.getCategorias()
+            if descripcion+unidad not in catProds:
+                productRow=(descripcion,unidad,catCategos[catego] )
+                bd.insertaProducto(productRow)
+                print("Nuevo Producto: "+descripcion)
+                catProds= bd.getProductos()
+            
+            newRow=(fecha,catProds[descripcion+unidad],precio)
             newRowsArr.append(newRow)    
-    if len(newRowsArr)>0:
+    if len(newRowsArr)>0:       
+
         bd.insertaPrecios(newRowsArr)
     
 
 def loadHistorico():
     #Carga Inicial
-    fecha=date(2020,11,26)
+    
+    fecha=date(2014,5,19)
     fechaFinal=datetime.today().date()        
     while fecha<=fechaFinal:
         extraeRows(fecha)        
@@ -42,7 +59,10 @@ def loadHistorico():
 
 
 if __name__=='__main__':   
-    loadHistorico()
+    
+    catCategos=bd.getCategorias()
+    catProds=bd.getProductos()
+    #loadHistorico()
     extraeRows(datetime.today().date())
     
     

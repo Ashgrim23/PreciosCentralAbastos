@@ -15,11 +15,11 @@ app.use(bodyParser.urlencoded({extended:true}))
 
 router.post('/api/precios',async(req,res)=>{
     
-    const {producto, fecha} =req.body    
+    const {id_producto, fecha} =req.body    
     
      conn.query(`select JSON_ARRAYAGG(
-                    JSON_OBJECT("x",date_format(FECHA,'%m/%d/%Y'),"y",PRECIO )) SERIE  from PCA.PRECIOS  
-                  where DESCRIPCION=? and FECHA<=?`,[producto,fecha],(err,rows,fields)=>{
+                JSON_OBJECT("x",date_format(FECHA,'%m/%d/%Y'),"y",PRECIO )) SERIE  from PCA.PRECIOS  
+                where ID_PRODUCTO=? and FECHA<=?`,[id_producto,fecha],(err,rows,fields)=>{
         
           if(!err){
               res.send(rows)
@@ -31,11 +31,13 @@ router.post('/api/precios',async(req,res)=>{
 
 router.get('/api/precios/:fecha',async(req,res)=>{
     const fecha = req.params.fecha
-    conn.query(`select s.FECHA,s.CATEGORIA,s.DESCRIPCION,s.PRECIO,s.UNIDAD, s2.precio PRECIOANT,s2.fecha FECHAANT 
-                from PCA.PRECIOS s
-                LEFT OUTER JOIN PCA.PRECIOS s2 on (s.CATEGORIA=s2.CATEGORIA and s.DESCRIPCION=s2.DESCRIPCION)
-                where s.fecha=(select max(FECHA) from PRECIOS t where t.FECHA<=?)
-                and s2.fecha=(select max(FECHA) from PRECIOS t where t.FECHA<s.FECHA)`,[fecha],(err,rows,fields)=>{
+    conn.query(`select  p.FECHA,c2.descripcion CATEGORIA,c1.DESCRIPCION,p.PRECIO,c1.UNIDAD,p2.precio PRECIOANT,p2.FECHA FECHAANT,p.ID_PRODUCTO
+                from PCA.PRECIOS p
+                inner join PCA.CAT_PRODUCTOS c1 on (c1.id_producto=p.id_producto)
+                inner join PCA.CAT_CATEGORIAS c2 on (c1.id_categoria=c2.id_categoria)
+                LEFT OUTER JOIN PCA.PRECIOS p2 on (p2.id_producto=p.id_producto)
+                where p.fecha=(select max(FECHA) from PRECIOS t where t.FECHA<=?)
+                and p2.fecha=(select max(FECHA) from PRECIOS t where t.FECHA<p.FECHA)`,[fecha],(err,rows,fields)=>{
         if(!err){
             res.json({
                 exito:true,
