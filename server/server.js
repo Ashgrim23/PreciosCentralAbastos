@@ -13,6 +13,15 @@ app.use(cors())
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended:true}))
 
+router.get('/api/maxfecha',async(req,res)=>{
+    conn.query('select max(fecha) maxfecha from PCA.PRECIOS',[],(err,row,fields)=>{
+        if(!err)
+        res.send(row)
+        else 
+        console.log(err)
+    })
+})
+
 router.post('/api/precios',async(req,res)=>{
     
     const {id_producto, fecha} =req.body    
